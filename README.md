@@ -12,3 +12,8 @@
   * **chicago.csv**
   * **new_york_city.csv**
   * **washington.csv**
+
+  ### Credits
+  Resources used for the *Bikeshare project*:
+  - [Pandas documentation](https://pandas.pydata.org/docs/user_guide/index.html)
+  - [Python 3.7.6. documentation](https://docs.python.org/release/3.7.6/)
