@@ -21,22 +21,21 @@ def get_filters():
     city = input('Would you like to see data for Chicago, New York City or Washington?\n').title()
     while city not in {'Chicago', 'New York City', 'Washington'}:
         city = input('I\'m sorry, I don\'t recognize that city. Please enter your choice again (Chicago, New York City or Washington):\n').title()
- 
+
     # set inital values to no filters
-    month = 'All'
-    day = 'All'
-    
+    month = day = 'All'
+
     # get user input for filtering criteria
     response = input('\nWould you like to filter the data by month, day, both or not at all? Please type \'No\' for no time filter.\n').lower()
     while response not in {'month', 'day', 'both', 'no'}:
         response = input('\nI\'m sorry, I don\'t understand your answer, please respond with \'Month\', \'Day\', \'Both\' or \'No\':\n').lower()
-    
+
     # get user input for month (January, February, ... , June)
     if response in {'month', 'both'}:
         month = input('Which month - January, February, March, April, May, or June?\n').title()
         while month not in {'January', 'February', 'March', 'April', 'May', 'June'}:
             month = input('I\'m sorry, I don\'t recognize that month. Please enter your choice from the below list again:\n(January, February, March, April, May or June)\n').title()
-    
+
     # get user input for day of week (Monday, Tuesday, ... Sunday)
     if response in {'day', 'both'}:
         day = input('Which day - Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, or Sunday?\n').title()
@@ -59,10 +58,10 @@ def load_data(city, month, day):
     Returns:
         df - Pandas DataFrame containing city data filtered by month and day
     """
-    
+
     df = pd.read_csv(city.replace(' ', '_').lower() + '.csv')
     df['Start Time'] = pd.to_datetime(df['Start Time'])
-    
+
     df['Start Month'] = df['Start Time'].dt.month_name()
     df['Start Day'] = df['Start Time'].dt.day_name()
     df['Start Hour'] = df['Start Time'].dt.hour
@@ -72,29 +71,28 @@ def load_data(city, month, day):
     elif (month != 'All') and (day == 'All'):
         df = df[df['Start Month'] == month]
     elif (month == 'All') and (day != 'All'):
-        df = df[df['Start Day']==day]   
-    
+        df = df[df['Start Day']==day]
+
     print('\nData was successfully loaded and filtered based on given criteria.')
     print('-'*40)
-    
+
     return df
 
 def display_raw_data(df):
     """
     Asks the user whether they want to display the raw data or not. If yes, 5 rows od data is printed at a time and the user is asked to confirm to print next 5 rows.
-    
+
     Args:
         df - Pandas DataFrame containing filtered city data
     """
-    
+
     response = input('\nWould you like to display raw data of the filtered dataset?\n').lower()
     while response not in {'yes', 'no'}:
         response = input('\nI\'m sorry, I don\'t understand your answer, please respond with \'Yes\' or \'No\':\n').lower()
-    
+
     if response == 'yes':
-        pos = 0
-        row_count = len(df)
-        
+        pos, row_count = 0, len(df)
+
         response2 = input('\nWould you like to display all columns or to fit the number of columns to screen width? Please answer with \'All\' or \'Fit\':\n').lower()
         while response2 not in {'all', 'fit'}:
             response2 = input('\nI\'m sorry, I don\'t understand your answer, please respond with \'All\' or \'Fit\':\n').lower()
@@ -102,21 +100,21 @@ def display_raw_data(df):
             pd.set_option('display.max_columns', None)
         else:
             pd.reset_option('display.max_columns')
-        
+
         while (response == 'yes') and (pos < row_count):
             print(df[pos:min(pos + 5, row_count)])
             pos += 5
             response = input('\nWould you like to print next 5 rows?\n').lower()
             while response not in {'yes', 'no'}:
                 response = input('\nI\'m sorry, I don\'t understand your answer, please respond with \'Yes\' or \'No\':\n').lower()
-        
+
         print('\nPrinted {} rows out of {}'.format(min(pos, row_count), row_count))
-        
+
         if response == 'no':
             print('Printing dataset ended on your request.')
         else:
             print('Printing dataset completed.')
-        
+
     print('-'*40)
 
 def time_stats(df):
@@ -220,7 +218,7 @@ def main():
     while True:
         city, month, day = get_filters()
         df = load_data(city, month, day)
-        
+
         display_raw_data(df)
 
         time_stats(df)
